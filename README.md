@@ -1,6 +1,6 @@
 # QAOS — QA Operating System
 
-**QAOS** *(pronounced like "chaos")* — a vendor-neutral framework for making quality standards
+**QAOS** *(pronounced "chaos")* — a vendor-neutral framework for making quality standards
 actually reach the work, instead of sitting in a document nobody opens.
 
 This repository is the **narrative and go-to-market layer** for the production QA operating system.
