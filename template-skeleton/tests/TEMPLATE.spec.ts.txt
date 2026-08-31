@@ -1,0 +1,26 @@
+/**
+ * The shape of a fully-tagged spec. Copy into tests/e2e or tests/api and rename to *.spec.ts.
+ * Kept as .txt so it is not collected by a run before it has been filled in.
+ *
+ * Every test() carries THREE things in its TITLE STRING (not the runner's separate tag option —
+ * that does not reach the machine-readable test name the TMS matches on):
+ *   1. a suite tag      — @core | @smoke | @regression
+ *   2. a feature tag    — the area it exercises, e.g. @auth
+ *   3. a TMS case tag   — @C<id>
+ * ...plus the issue key, @<ISSUE_PREFIX>-###.
+ */
+
+import { test } from '../support/fixtures/test-base';   // fixtures inject Page Objects & API Managers
+import { title, Tag } from '../support/tags';
+import { catalogMeta } from '../support/catalog';
+
+test(
+  title('logout returns to the login screen @C12345 @<ISSUE_PREFIX>-123', [Tag.smoke], [Tag.auth]),
+  { annotation: catalogMeta({ features: [Tag.auth], issue: '<ISSUE_PREFIX>-123', tmsCase: 12345 }) },
+  async ({ loginPage }) => {
+    // Arrange state via an API Manager, never through the UI.
+    // Act through a Page Object.
+    // Assert with the runner's expect. Prefer role/label/testid locators.
+    // Clean up anything created — via API, in an afterEach/afterAll.
+  },
+);

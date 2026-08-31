@@ -1,0 +1,823 @@
+<title>QA Operating System</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@600;700;800&family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+
+<style>
+  :root {
+    /* cool-biased neutrals */
+    --ground: #f4f5f9;
+    --surface: #ffffff;
+    --surface-2: #eceef4;
+    --line: #d7dae4;
+    --line-strong: #b9bece;
+    --ink: #12151d;
+    --ink-2: #3a4152;
+    --ink-3: #626b7e;
+    /* accent — burnt amber, a checkpoint/gate light */
+    --gate: #b96f1e;
+    --gate-soft: #f2e6d3;
+    --gate-line: #e0c79c;
+    /* semantic only, never accent */
+    --pass: #2f7d54;
+    --pass-soft: #dcefe3;
+    --hold: #b0433d;
+    --hold-soft: #f2ddda;
+
+    --maxw: 1080px;
+    --gap: clamp(3rem, 6vw, 5.5rem);
+    --radius: 3px;
+
+    --f-display: 'Archivo', system-ui, sans-serif;
+    --f-body: 'IBM Plex Sans', system-ui, sans-serif;
+    --f-mono: 'IBM Plex Mono', ui-monospace, monospace;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --ground: #0d0f14;
+      --surface: #141821;
+      --surface-2: #1b2029;
+      --line: #272d39;
+      --line-strong: #37404f;
+      --ink: #eef0f5;
+      --ink-2: #b6bccb;
+      --ink-3: #838b9d;
+      --gate: #dfa057;
+      --gate-soft: #2c2415;
+      --gate-line: #4a3c22;
+      --pass: #5cb585;
+      --pass-soft: #16281e;
+      --hold: #d97a73;
+      --hold-soft: #2c1917;
+    }
+  }
+  :root[data-theme="dark"] {
+    --ground: #0d0f14;
+    --surface: #141821;
+    --surface-2: #1b2029;
+    --line: #272d39;
+    --line-strong: #37404f;
+    --ink: #eef0f5;
+    --ink-2: #b6bccb;
+    --ink-3: #838b9d;
+    --gate: #dfa057;
+    --gate-soft: #2c2415;
+    --gate-line: #4a3c22;
+    --pass: #5cb585;
+    --pass-soft: #16281e;
+    --hold: #d97a73;
+    --hold-soft: #2c1917;
+  }
+
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+
+  body {
+    margin: 0;
+    background: var(--ground);
+    color: var(--ink);
+    font-family: var(--f-body);
+    font-size: 17px;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .wrap { max-width: var(--maxw); margin: 0 auto; padding: 0 clamp(1.25rem, 4vw, 2.5rem); }
+
+  /* ---- shared type ---- */
+  h1, h2, h3 { font-family: var(--f-display); font-weight: 800; line-height: 1.08; text-wrap: balance; letter-spacing: -0.02em; margin: 0; }
+  p { margin: 0 0 1rem; max-width: 68ch; }
+  a { color: inherit; }
+
+  .eyebrow {
+    font-family: var(--f-mono);
+    font-size: 0.72rem;
+    font-weight: 500;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--gate);
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6em;
+  }
+  .eyebrow::before { content: ""; width: 1.6em; height: 1px; background: var(--gate-line); }
+
+  .mono { font-family: var(--f-mono); }
+  .lead { font-size: clamp(1.05rem, 1.6vw, 1.22rem); color: var(--ink-2); max-width: 60ch; }
+
+  /* ---- section rhythm ---- */
+  section { padding: var(--gap) 0; border-top: 1px solid var(--line); }
+  .sec-head { margin-bottom: 2.5rem; }
+  .sec-head h2 { font-size: clamp(1.7rem, 3.4vw, 2.5rem); margin: 0.7rem 0 0.5rem; }
+  .sec-head .sub { color: var(--ink-2); max-width: 62ch; margin: 0; }
+
+  /* ============ HERO ============ */
+  header.hero {
+    position: relative;
+    padding: clamp(3.5rem, 8vw, 6.5rem) 0 clamp(2.5rem, 5vw, 4rem);
+    overflow: hidden;
+  }
+  header.hero::before {
+    /* faint schematic grid */
+    content: "";
+    position: absolute; inset: 0;
+    background-image:
+      linear-gradient(var(--line) 1px, transparent 1px),
+      linear-gradient(90deg, var(--line) 1px, transparent 1px);
+    background-size: 48px 48px;
+    -webkit-mask-image: radial-gradient(120% 90% at 78% 0%, #000 0%, transparent 62%);
+    mask-image: radial-gradient(120% 90% at 78% 0%, #000 0%, transparent 62%);
+    opacity: 0.55;
+    pointer-events: none;
+  }
+  header.hero .wrap { position: relative; }
+  .hero h1 {
+    font-size: clamp(2.6rem, 7vw, 5rem);
+    letter-spacing: -0.035em;
+    margin-top: 1.4rem;
+    max-width: 16ch;
+  }
+  .hero h1 .amp { color: var(--gate); }
+  .hero .thesis {
+    font-size: clamp(1.1rem, 2vw, 1.4rem);
+    color: var(--ink-2);
+    max-width: 46ch;
+    margin-top: 1.5rem;
+    line-height: 1.5;
+  }
+  .metarow {
+    display: flex; flex-wrap: wrap; gap: 0.5rem;
+    margin-top: 2.2rem;
+  }
+  .chip {
+    font-family: var(--f-mono);
+    font-size: 0.74rem;
+    letter-spacing: 0.02em;
+    color: var(--ink-2);
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 100px;
+    padding: 0.4rem 0.9rem;
+  }
+  .chip b { color: var(--gate); font-weight: 600; }
+
+  .flow-strip {
+    margin-top: 3rem;
+    display: flex; align-items: center; flex-wrap: wrap;
+    gap: 0.5rem 0.35rem;
+    font-family: var(--f-mono);
+    font-size: 0.8rem;
+    color: var(--ink-2);
+  }
+  .flow-strip .node {
+    background: var(--surface); border: 1px solid var(--line);
+    padding: 0.35rem 0.7rem; border-radius: var(--radius);
+    white-space: nowrap;
+  }
+  .flow-strip .node.up { border-color: var(--gate-line); color: var(--gate); }
+  .flow-strip .arrow { color: var(--ink-3); }
+
+  /* ============ generic cards ============ */
+  .cards { display: grid; gap: 1rem; }
+  .cols-3 { grid-template-columns: repeat(3, 1fr); }
+  .cols-2 { grid-template-columns: repeat(2, 1fr); }
+  @media (max-width: 820px) { .cols-3, .cols-2 { grid-template-columns: 1fr; } }
+
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    padding: 1.4rem 1.5rem;
+  }
+  .card h3 { font-size: 1.08rem; font-weight: 700; margin-bottom: 0.5rem; }
+  .card p { font-size: 0.94rem; color: var(--ink-2); margin: 0; max-width: none; }
+  .card .num {
+    font-family: var(--f-mono); font-size: 0.72rem; color: var(--gate);
+    letter-spacing: 0.1em; display: block; margin-bottom: 0.9rem;
+  }
+
+  /* ============ TIER STACK ============ */
+  .stack { display: grid; gap: 0; border: 1px solid var(--line-strong); border-radius: var(--radius); overflow: hidden; }
+  .tier {
+    display: grid;
+    grid-template-columns: 92px 1fr;
+    align-items: stretch;
+    background: var(--surface);
+    border-bottom: 1px solid var(--line);
+  }
+  .tier:last-child { border-bottom: 0; }
+  .tier .tag {
+    background: var(--surface-2);
+    border-right: 1px solid var(--line);
+    font-family: var(--f-mono);
+    font-weight: 600;
+    font-size: 0.9rem;
+    color: var(--gate);
+    display: flex; align-items: center; justify-content: center;
+    padding: 1.1rem 0;
+  }
+  .tier .body { padding: 1.15rem 1.4rem; }
+  .tier .body .role { font-family: var(--f-display); font-weight: 700; font-size: 1.06rem; letter-spacing: -0.01em; }
+  .tier .body .role span { color: var(--ink-3); font-family: var(--f-mono); font-size: 0.76rem; font-weight: 400; margin-left: 0.6rem; letter-spacing: 0.03em; }
+  .tier .body .owns { color: var(--ink-2); font-size: 0.93rem; margin-top: 0.15rem; }
+  .tier .body .rule { color: var(--ink); font-size: 0.9rem; margin-top: 0.7rem; padding-left: 0.85rem; border-left: 2px solid var(--gate-line); font-style: italic; }
+
+  .stack-rails {
+    display: flex; justify-content: space-between;
+    font-family: var(--f-mono); font-size: 0.74rem; letter-spacing: 0.04em;
+    color: var(--ink-3);
+    margin: 0.9rem 0.2rem 0;
+  }
+  .stack-rails b { color: var(--gate); font-weight: 600; }
+
+  .inherit {
+    margin-top: 1.6rem;
+    display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;
+  }
+  @media (max-width: 820px) { .inherit { grid-template-columns: 1fr; } }
+  .inherit .box { border: 1px solid var(--line); border-radius: var(--radius); padding: 1.1rem 1.3rem; background: var(--surface); }
+  .inherit .box .k { font-family: var(--f-mono); font-size: 0.72rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--gate); }
+  .inherit .box p { font-size: 0.92rem; color: var(--ink-2); margin: 0.5rem 0 0; max-width: none; }
+
+  /* ============ callout ============ */
+  .callout {
+    background: var(--gate-soft);
+    border: 1px solid var(--gate-line);
+    border-radius: var(--radius);
+    padding: 1.2rem 1.4rem;
+    font-size: 0.96rem;
+    color: var(--ink);
+    margin: 1.6rem 0 0;
+  }
+  .callout .k { font-family: var(--f-mono); font-size: 0.72rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--gate); display: block; margin-bottom: 0.4rem; }
+  .callout p { margin: 0; max-width: none; }
+  .callout p + p { margin-top: 0.6rem; }
+
+  /* ============ code-ish blocks ============ */
+  .diagram {
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    padding: 1.3rem 1.5rem;
+    font-family: var(--f-mono);
+    font-size: clamp(0.72rem, 1.35vw, 0.86rem);
+    line-height: 1.85;
+    color: var(--ink-2);
+    overflow-x: auto;
+    white-space: pre;
+    margin: 0;
+    tab-size: 2;
+  }
+  .diagram .hi { color: var(--gate); }
+  .diagram .dim { color: var(--ink-3); }
+
+  /* ============ pipeline / gates ============ */
+  .track { overflow-x: auto; padding-bottom: 0.5rem; }
+  .track-inner { display: flex; align-items: stretch; gap: 0; min-width: 720px; }
+  .stop { display: flex; flex-direction: column; align-items: center; flex: 1; position: relative; }
+  .stop .dot {
+    width: 15px; height: 15px; border-radius: 50%;
+    background: var(--surface); border: 2px solid var(--gate);
+    z-index: 2;
+  }
+  .stop::before {
+    content: ""; position: absolute; top: 6.5px; left: -50%; width: 100%; height: 2px;
+    background: var(--gate-line);
+  }
+  .stop:first-child::before { display: none; }
+  .stop .name { font-size: 0.76rem; color: var(--ink); margin-top: 0.7rem; text-align: center; font-weight: 500; }
+  .stop .kw { font-family: var(--f-mono); font-size: 0.68rem; color: var(--gate); margin-top: 0.2rem; text-align: center; }
+
+  /* ============ identity spine ============ */
+  .spine {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1rem;
+    position: relative;
+    margin-top: 0.5rem;
+  }
+  @media (max-width: 820px) { .spine { grid-template-columns: 1fr 1fr; } }
+  .spine .rail {
+    grid-column: 1 / -1;
+    display: flex; align-items: center; gap: 0.8rem;
+    font-family: var(--f-mono); font-weight: 600;
+    color: var(--gate); font-size: 0.82rem; letter-spacing: 0.06em;
+    margin-bottom: 0.4rem;
+  }
+  .spine .rail .bar { flex: 1; height: 2px; background: var(--gate); }
+  .spine .node2 {
+    background: var(--surface); border: 1px solid var(--line);
+    border-top: 2px solid var(--gate);
+    border-radius: var(--radius); padding: 0.9rem 1rem;
+  }
+  .spine .node2 .t { font-weight: 600; font-size: 0.9rem; }
+  .spine .node2 .d { font-family: var(--f-mono); font-size: 0.72rem; color: var(--ink-3); margin-top: 0.35rem; }
+
+  /* ============ tables ============ */
+  .tbl-scroll { overflow-x: auto; }
+  table { border-collapse: collapse; width: 100%; min-width: 560px; font-size: 0.9rem; }
+  th, td { text-align: left; padding: 0.7rem 0.9rem; border-bottom: 1px solid var(--line); vertical-align: top; }
+  thead th { font-family: var(--f-mono); font-size: 0.7rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink-3); font-weight: 500; border-bottom: 1px solid var(--line-strong); }
+  tbody tr:last-child td { border-bottom: 0; }
+  td .mono, th .mono { color: var(--gate); }
+  td.slot { font-weight: 600; }
+
+  /* verdict pills */
+  .pill { font-family: var(--f-mono); font-size: 0.7rem; font-weight: 600; padding: 0.15rem 0.5rem; border-radius: 100px; white-space: nowrap; display: inline-block; }
+  .pill.unit { background: var(--pass-soft); color: var(--pass); border: 1px solid var(--pass); }
+  .pill.integ { background: var(--gate-soft); color: var(--gate); border: 1px solid var(--gate-line); }
+  .pill.e2e { background: var(--hold-soft); color: var(--hold); border: 1px solid var(--hold); }
+
+  /* ============ route cards ============ */
+  .routes { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; }
+  @media (max-width: 820px) { .routes { grid-template-columns: 1fr; } }
+  .route { border: 1px solid var(--line); border-radius: var(--radius); background: var(--surface); padding: 1.2rem 1.3rem; }
+  .route .lbl { font-family: var(--f-mono); font-size: 0.74rem; letter-spacing: 0.06em; font-weight: 600; }
+  .route.a .lbl { color: var(--pass); }
+  .route.b .lbl { color: var(--gate); }
+  .route.keep .lbl { color: var(--ink-3); }
+  .route h3 { font-size: 1rem; margin: 0.5rem 0 0.4rem; }
+  .route p { font-size: 0.9rem; color: var(--ink-2); margin: 0; max-width: none; }
+
+  /* ============ standards list ============ */
+  .floor-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0.7rem 1.6rem; }
+  @media (max-width: 820px) { .floor-grid { grid-template-columns: 1fr; } }
+  .floor-item { display: grid; grid-template-columns: 2rem 1fr; gap: 0.5rem; padding: 0.55rem 0; border-bottom: 1px solid var(--line); align-items: baseline; }
+  .floor-item .n { font-family: var(--f-mono); color: var(--gate); font-size: 0.85rem; font-weight: 600; }
+  .floor-item .txt { font-size: 0.94rem; }
+  .floor-item .txt b { font-weight: 600; }
+
+  /* ============ adoption steps ============ */
+  .steps { display: grid; gap: 0; counter-reset: step; }
+  .step { display: grid; grid-template-columns: 3rem 1fr; gap: 1.2rem; padding: 1.3rem 0; border-bottom: 1px solid var(--line); }
+  .step:last-child { border-bottom: 0; }
+  .step .idx { font-family: var(--f-display); font-weight: 800; font-size: 1.5rem; color: var(--gate); line-height: 1; }
+  .step h3 { font-size: 1.05rem; margin-bottom: 0.3rem; }
+  .step p { font-size: 0.94rem; color: var(--ink-2); margin: 0; }
+
+  /* ============ footer ============ */
+  footer { border-top: 1px solid var(--line-strong); padding: 3rem 0 4rem; }
+  footer .big { font-family: var(--f-display); font-weight: 800; font-size: clamp(1.4rem, 3.5vw, 2.1rem); letter-spacing: -0.02em; max-width: 22ch; }
+  footer .big .amp { color: var(--gate); }
+  footer .meta { font-family: var(--f-mono); font-size: 0.76rem; color: var(--ink-3); margin-top: 1.6rem; letter-spacing: 0.03em; }
+
+  .two-col { display: grid; grid-template-columns: 1.15fr 1fr; gap: 2.2rem; align-items: start; }
+  @media (max-width: 860px) { .two-col { grid-template-columns: 1fr; } }
+</style>
+
+<header class="hero">
+  <div class="wrap">
+    <span class="eyebrow">Vendor-neutral QA framework</span>
+    <h1>A reusable QA <span class="amp">operating system</span></h1>
+    <p class="thesis">Make quality standards actually reach the work — instead of sitting in a document nobody opens.</p>
+
+    <div class="metarow">
+      <span class="chip"><b>Standards</b> cascade down</span>
+      <span class="chip"><b>Evidence</b> flows up</span>
+      <span class="chip">Written once, <b>lands everywhere</b></span>
+      <span class="chip"><b>QA OS Lite</b> for startups</span>
+    </div>
+
+    <div class="flow-strip" aria-hidden="true">
+      <span class="node">issue</span><span class="arrow">→</span>
+      <span class="node">analyse</span><span class="arrow">→</span>
+      <span class="node">cases</span><span class="arrow">→</span>
+      <span class="node">manual</span><span class="arrow">→</span>
+      <span class="node">automate</span><span class="arrow">→</span>
+      <span class="node">report</span><span class="arrow">→</span>
+      <span class="node up">sign-off</span>
+    </div>
+  </div>
+</header>
+
+<main class="wrap">
+
+  <!-- PRODUCT -->
+  <section id="product">
+    <div class="sec-head">
+      <span class="eyebrow">Commercial product</span>
+      <h2>QA OS Lite — for AI startups</h2>
+      <p class="sub">The same operating system, packaged for single-product teams: integrated <span class="mono">qa/</span> folder, Linear, readiness gate first, <span class="mono">@core</span> on every PR.</p>
+    </div>
+
+    <div class="cards cols-3">
+      <div class="card">
+        <span class="num">STEP 01</span>
+        <h3>Readiness gate</h3>
+        <p>Score staging, auth, APIs, and isolation <em>before</em> init. <strong>GO</strong>, <strong>CONDITIONAL</strong>, or <strong>NO-GO</strong> — with eng prerequisites when needed.</p>
+      </div>
+      <div class="card">
+        <span class="num">STEP 02</span>
+        <h3>Install &amp; init</h3>
+        <p>Vendored skills and Playwright harness land in <span class="mono">qa/</span>. <span class="mono">qa-0-init</span> fills tokens; <span class="mono">qa-start</span> opens the pipeline.</p>
+      </div>
+      <div class="card">
+        <span class="num">STEP 03</span>
+        <h3>Release Gate Lite</h3>
+        <p>HTML report combining readiness score and <span class="mono">@core</span> results — the answer investors ask for, as a record.</p>
+      </div>
+    </div>
+
+    <div class="callout" style="margin-top:1.6rem">
+      <span class="k">Three repositories</span>
+      <p><strong>qa-framework-base</strong> — Director tier (standards, skills, rubric). <strong>qa-automation-template</strong> — Standard + Lite scaffold. <strong>qa-operating-system</strong> — narrative and GTM docs. Clients receive vendored copies — no submodules.</p>
+    </div>
+  </section>
+
+  <!-- WHY -->
+  <section id="why">
+    <div class="sec-head">
+      <span class="eyebrow">The problem it dissolves</span>
+      <h2>An acceptance criterion hides five guesses</h2>
+      <p class="sub">It says what must be true. It does not say <em>which user</em> does it, from <em>which state</em>, with <em>what data</em>, on <em>which environment</em>, or what must <em>not</em> happen. A test written straight from an AC bakes in the author's guess about all five — and the guess is invisible in the resulting code.</p>
+    </div>
+    <div class="cards cols-3">
+      <div class="card">
+        <span class="num">FAILURE 01</span>
+        <h3>Invisible guesses</h3>
+        <p>Tests that pass on dev and fail on staging because an unstated assumption was baked in. The framework's answer: a structured <strong>interview</strong> makes every guess explicit before it becomes an assertion.</p>
+      </div>
+      <div class="card">
+        <span class="num">FAILURE 02</span>
+        <h3>Standards drift</h3>
+        <p>A style guide everyone agreed to and nobody follows six months later. The answer: standards live in <strong>tier modules</strong>, and an AI layer reads them at runtime — so the rule and the work never diverge.</p>
+      </div>
+      <div class="card">
+        <span class="num">FAILURE 03</span>
+        <h3>"Was this tested?"</h3>
+        <p>The honest answer is an anecdote, not a record. The answer: one <strong>identity spine</strong> joins issue → case → test → result, so the question becomes a query with an auditable answer.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- TIERS -->
+  <section id="tiers">
+    <div class="sec-head">
+      <span class="eyebrow">Ownership model</span>
+      <h2>Four tiers, segmented by responsibility</h2>
+      <p class="sub">Not by headcount. One person can hold several tiers — the framework guarantees every responsibility has an <em>owner</em>, not that every tier has a dedicated hire.</p>
+    </div>
+
+    <div class="stack">
+      <div class="tier">
+        <div class="tag">T1</div>
+        <div class="body">
+          <div class="role">Core <span>Director of QA</span></div>
+          <div class="owns">Company-wide standards, the tool stack, the shared AI skills &amp; agents.</div>
+          <div class="rule">A change here changes every product line. The owner approves it; products never fork it.</div>
+        </div>
+      </div>
+      <div class="tier">
+        <div class="tag">T2</div>
+        <div class="body">
+          <div class="role">Manager <span>QA Manager</span></div>
+          <div class="owns">Portfolio quality across ~3 products, the release gate, process definition.</div>
+          <div class="rule">Nothing ships without a recorded sign-off — auditable six months later, not a chat thumbs-up.</div>
+        </div>
+      </div>
+      <div class="tier">
+        <div class="tag">T3</div>
+        <div class="body">
+          <div class="role">Product Lead <span>QA Product Lead</span></div>
+          <div class="owns">One product's real context, its suites, its case structure.</div>
+          <div class="rule">Produce suites an engineer can run without having to guess.</div>
+        </div>
+      </div>
+      <div class="tier">
+        <div class="tag">T4</div>
+        <div class="body">
+          <div class="role">Engineer <span>QA Engineer</span></div>
+          <div class="owns">Running cases, maintaining specs, reporting evidence.</div>
+          <div class="rule">Report what actually happened. Nobody is hurt by an accurate red; everybody is eventually hurt by an inaccurate green.</div>
+        </div>
+      </div>
+    </div>
+    <div class="stack-rails">
+      <span>▲ <b>standards</b> cascade down</span>
+      <span><b>evidence</b> &amp; sign-off flow up ▲</span>
+    </div>
+
+    <div class="inherit">
+      <div class="box">
+        <span class="k">Core sets the floor</span>
+        <p>A minimum every tier inherits — every test tagged, every skip explained, every created record cleaned up. A product <strong>cannot opt out</strong>.</p>
+      </div>
+      <div class="box">
+        <span class="k">Product sets the ceiling</span>
+        <p>A product may <strong>add</strong> what core does not impose — a second reviewer, a mandatory visual baseline, a stricter flake threshold. It may narrow, never relax.</p>
+      </div>
+    </div>
+
+    <div class="callout">
+      <span class="k">The inheritance rule</span>
+      <p>Wanting to <em>relax</em> a core rule to ship something is the signal to stop and raise it with the tier owner — not to write an exception into a spec file. A rule that no product can satisfy is a broken rule, not a product problem. Fix it at the core.</p>
+    </div>
+  </section>
+
+  <!-- DISTRIBUTION -->
+  <section id="distribution">
+    <div class="sec-head">
+      <span class="eyebrow">Distribution</span>
+      <h2>How the base tier reaches every repository</h2>
+      <p class="sub">Vendored flat copies under <span class="mono">.claude/</span> — committed, pinned, refreshed via PR. No submodule step on a fresh clone.</p>
+    </div>
+
+    <pre class="diagram"><span class="hi">qa-framework-base</span> ──(vendor-base.mjs)──►  &lt;product-repo&gt;/
+                                 ├── <span class="hi">.claude/base/</span>         reference docs
+                                 ├── <span class="hi">.claude/skills/</span>       discoverable copies
+                                 ├── .claude/agents/
+                                 └── .claude/base-version.json</pre>
+
+    <div class="cards cols-2" style="margin-top:1.2rem">
+      <div class="card">
+        <span class="num">PROPERTY 01</span>
+        <h3>Vendored copies are committed</h3>
+        <p>A fresh clone works with no build step. The diff after a refresh shows exactly what changed.</p>
+      </div>
+      <div class="card">
+        <span class="num">PROPERTY 02</span>
+        <h3>Updates are opt-in per repo</h3>
+        <p><span class="mono">base-version.json</span> pins a version. Tracking the tip would let the release gate change underneath a team <em>during a release</em>.</p>
+      </div>
+      <div class="card">
+        <span class="num">PROPERTY 03</span>
+        <h3>Lite updates via PR</h3>
+        <p>Service engagements refresh the client's <span class="mono">qa/</span> folder — reviewable, not silent.</p>
+      </div>
+      <div class="card">
+        <span class="num">PROPERTY 04</span>
+        <h3>Never hand-edit a skill</h3>
+        <p>Move the change into qa-framework-base, run <span class="mono">base:refresh</span>, commit the result.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- AI LAYER -->
+  <section id="ai-layer">
+    <div class="sec-head">
+      <span class="eyebrow">The AI process layer</span>
+      <h2>The mechanism that carries standards into the work</h2>
+      <p class="sub">Skills and agents are how the standards <em>reach the work</em>, instead of sitting in a document nobody opens. The split is load-bearing.</p>
+    </div>
+
+    <div class="two-col">
+      <div>
+        <div class="cards cols-2" style="grid-template-columns:1fr">
+          <div class="card">
+            <h3>Tier modules own the substance</h3>
+            <p>Standards, release process, product context. The material each role is accountable for — the ownership boundary is the directory.</p>
+          </div>
+          <div class="card">
+            <h3>Skills &amp; agents own the mechanism</h3>
+            <p>They are thin. Each one <em>reads from</em> the tier modules rather than restating them.</p>
+          </div>
+        </div>
+        <div class="callout">
+          <span class="k">A skill states process, not policy</span>
+          <p>If a skill contains a rule, that rule belongs in a tier module and the skill should point at it. Duplicated policy drifts, and the copy in the skill is the one that gets stale. A policy change lands in exactly one file and every skill picks it up on its next run.</p>
+        </div>
+      </div>
+
+      <div>
+        <pre class="diagram"><span class="dim">one entry point → five phases</span>
+<span class="hi">start</span>  the front door
+  │
+  ├─ 1  <span class="hi">analyse</span>   requirement + interview
+  ├─ 2  <span class="hi">cases</span>     draft → reviewed cases
+  ├─ 3  <span class="hi">manual</span>    manual pass + evidence
+  ├─ 4  <span class="hi">automate</span>  specs → PR → stamped
+  └─ 5  <span class="hi">report</span>    results + status
+
+<span class="dim">standalone</span>
+  · bug-documentation
+  · milestone-regression
+  · shift-left-evaluation</pre>
+      </div>
+    </div>
+
+    <div class="inherit" style="margin-top:1.8rem">
+      <div class="box">
+        <span class="k">Rule · the author never vouches</span>
+        <p>The requirement reviewer checks an artifact it did not write; the case reviewer reviews cases it did not draft; the bug reviewer re-runs a failure someone else reported. <strong>A review by the author is not a review.</strong></p>
+      </div>
+      <div class="box">
+        <span class="k">Rule · context is contained</span>
+        <p>Browser-driving, result parsing, and data generation happen in a subagent's own context — so the orchestrating conversation doesn't carry that history forward and re-pay for it every turn.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- GATES -->
+  <section id="gates">
+    <div class="sec-head">
+      <span class="eyebrow">Gates &amp; the interview</span>
+      <h2>The pipeline stops until a human says proceed</h2>
+      <p class="sub">A gate is a full stop. Never skipped, never inferred from silence — an unanswered question is not a yes. Each gate has an explicit keyword that proceeds it, so approval is a deliberate act that leaves a record.</p>
+    </div>
+
+    <div class="track" role="img" aria-label="Pipeline gates: checkout confirmed, deploy ready, interview complete, cases ok, data staged, manual pass, evaluation reviewed, routing approved, tracker write confirmed">
+      <div class="track-inner">
+        <div class="stop"><span class="dot"></span><span class="name">Checkout</span><span class="kw">confirmed</span></div>
+        <div class="stop"><span class="dot"></span><span class="name">Deploy</span><span class="kw">ready</span></div>
+        <div class="stop"><span class="dot"></span><span class="name">Interview</span><span class="kw">complete</span></div>
+        <div class="stop"><span class="dot"></span><span class="name">Cases</span><span class="kw">confirmed</span></div>
+        <div class="stop"><span class="dot"></span><span class="name">Data</span><span class="kw">staged</span></div>
+        <div class="stop"><span class="dot"></span><span class="name">Manual</span><span class="kw">pass</span></div>
+        <div class="stop"><span class="dot"></span><span class="name">Evaluation</span><span class="kw">reviewed</span></div>
+        <div class="stop"><span class="dot"></span><span class="name">Routing</span><span class="kw">approved</span></div>
+        <div class="stop"><span class="dot"></span><span class="name">Tracker write</span><span class="kw">confirmed</span></div>
+      </div>
+    </div>
+
+    <div class="two-col" style="margin-top:2rem">
+      <div class="card">
+        <h3>The interview is the cheapest place to find ambiguity</h3>
+        <p style="max-width:none">Cheaper than a case, a spec, and a run built on it. A fixed set of questions — which flows, which identity, what starting state, the happy path, the negative cases, the environment specifics, what's explicitly out of scope, and how each AC bullet maps to a case — and it <strong>refuses to infer an answer to make progress</strong>.</p>
+      </div>
+      <div class="card">
+        <h3>Steps are keywords, not prose</h3>
+        <p style="max-width:none">Prose has to be re-interpreted by whoever automates it, reintroducing the guessing the interview removed. A fixed vocabulary maps one-to-one onto the automation runner:</p>
+        <p class="mono" style="margin-top:0.8rem;color:var(--gate);font-size:0.82rem;max-width:none">Navigate · Click · Fill · Select · Press · Upload · Verify</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- SPINE -->
+  <section id="spine">
+    <div class="sec-head">
+      <span class="eyebrow">The identity spine</span>
+      <h2>Everything joins on one key</h2>
+      <p class="sub">The issue key is the single join that turns "was this tested?" into a query. A link written the wrong way <em>appears to succeed</em> and is invisible to every query — so pick the mechanism your tools support, verify it once, and record it.</p>
+    </div>
+
+    <div class="spine">
+      <div class="rail"><span>ISSUE&nbsp;KEY</span><span class="bar"></span></div>
+      <div class="node2"><div class="t">Requirement</div><div class="d">reviewed artifact</div></div>
+      <div class="node2"><div class="t">Test case</div><div class="d">in the TMS · native link</div></div>
+      <div class="node2"><div class="t">Automated test</div><div class="d">@Case-id + @KEY in title</div></div>
+      <div class="node2"><div class="t">Source PR</div><div class="d">discovered at run time</div></div>
+    </div>
+
+    <div class="tbl-scroll" style="margin-top:1.6rem">
+      <table>
+        <thead><tr><th>Link</th><th>Mechanism</th></tr></thead>
+        <tbody>
+          <tr><td>Issue → test case</td><td>The TMS's <span class="mono">native issue link</span> — never a custom text field a query can't see</td></tr>
+          <tr><td>Test case → automated test</td><td>A <span class="mono">@Case-id</span> tag in the <strong>test title</strong> — reporting matches on test name, so results map with no custom plumbing</td></tr>
+          <tr><td>Automated test → issue</td><td>The issue key in the title, plus an annotation the reporter emits</td></tr>
+          <tr><td>Test case → spec file</td><td>The TMS's native automation-link field — numeric ids, populated only after a run is submitted</td></tr>
+          <tr><td>Test → area / folder</td><td>A feature tag, mapped through one catalog file</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- SHIFT LEFT -->
+  <section id="shift-left">
+    <div class="sec-head">
+      <span class="eyebrow">Shift-left evaluation</span>
+      <h2>Push coverage down the pyramid — grounded in real source</h2>
+      <p class="sub">E2E tests are the slowest, flakiest, most expensive coverage there is. This batch process finds cases that could be caught lower, classified by the lowest level that can still catch what they protect against.</p>
+    </div>
+
+    <div class="tbl-scroll">
+      <table>
+        <thead><tr><th>Verdict</th><th>The case…</th><th>Grounding required</th></tr></thead>
+        <tbody>
+          <tr><td><span class="pill unit">UNIT</span></td><td>Validates an isolated function; no external dependencies; runs in milliseconds</td><td>Name the function <strong>and its file</strong> in real source, or it isn't a unit</td></tr>
+          <tr><td><span class="pill integ">INTEGRATION</span></td><td>Validates data flow between internal components; no full UI</td><td>Name the components <strong>and the seam</strong> between them</td></tr>
+          <tr><td><span class="pill e2e">KEEP-E2E</span></td><td>Inherently needs a deployed environment or a real user journey</td><td>The default whenever the evidence to shift is absent</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="routes" style="margin-top:1.6rem">
+      <div class="route a">
+        <span class="lbl">PATH A</span>
+        <h3>QA authors</h3>
+        <p>Only when the logic is straightforward and the target repo is cleared. Produces a test + PR body as an artifact for a human to commit.</p>
+      </div>
+      <div class="route b">
+        <span class="lbl">PATH B</span>
+        <h3>Developer handoff</h3>
+        <p>A backlog spec — evaluation, evidence, and acceptance criteria — for a developer with the architectural context.</p>
+      </div>
+      <div class="route keep">
+        <span class="lbl">KEEP</span>
+        <h3>Stays E2E</h3>
+        <p>Nothing changes. The case remains E2E, stated explicitly rather than by omission.</p>
+      </div>
+    </div>
+
+    <div class="callout">
+      <span class="k">Two absolute rails</span>
+      <p><strong>Automation never writes to application source.</strong> Path A vs B is about <em>who authors</em> — QA or a developer — never whether automation may push to app code. It never may.</p>
+      <p><strong>Deprecation is conditional, never automatic.</strong> A shifted case is retired only after its replacement is green in CI — by marking state, never by hard-deleting. Until then, the E2E case is the only coverage there is.</p>
+    </div>
+  </section>
+
+  <!-- FLOOR -->
+  <section id="floor">
+    <div class="sec-head">
+      <span class="eyebrow">The standards floor</span>
+      <h2>Rules you don't relax to make something pass</h2>
+      <p class="sub">This is the reference implementation's floor. Your team sets its own — but the <em>shape</em> generalizes, and the last one is a standing rule above all others.</p>
+    </div>
+
+    <div class="floor-grid">
+      <div class="floor-item"><span class="n">01</span><span class="txt"><b>API-first state.</b> Never drive the UI to set up data or log in when an endpoint exists.</span></div>
+      <div class="floor-item"><span class="n">02</span><span class="txt"><b>Injection over instantiation.</b> Page objects and managers reach a test through fixtures — a constructed object skips teardown.</span></div>
+      <div class="floor-item"><span class="n">03</span><span class="txt"><b>Zero-trust locators.</b> Role / label / test-id / text. A CSS <span class="mono">nth-child</span> chain encodes layout, and layout changes.</span></div>
+      <div class="floor-item"><span class="n">04</span><span class="txt"><b>Defensive waiting.</b> Explicit visibility or a response wait. Never a fixed sleep.</span></div>
+      <div class="floor-item"><span class="n">05</span><span class="txt"><b>Mandatory tagging.</b> Suite tag + feature tag + case-id. An untagged test runs, counts toward nothing, and looks complete.</span></div>
+      <div class="floor-item"><span class="n">06</span><span class="txt"><b>No silent skips.</b> Every skip carries a reason; every deferred test carries an issue key.</span></div>
+      <div class="floor-item"><span class="n">07</span><span class="txt"><b>Clean up what you create.</b> Teardown via API in <span class="mono">afterEach</span> / <span class="mono">afterAll</span>.</span></div>
+      <div class="floor-item"><span class="n">08</span><span class="txt"><b>Never weaken a test to pass.</b> A test that can't pass honestly has found something. Stop and ask.</span></div>
+    </div>
+
+    <div class="callout">
+      <span class="k">The standing rule</span>
+      <p>Automation has <strong>read-only access to the application's source control</strong>. It can open a PR in the <em>test</em> repository but never create, approve, or complete one against app code, a work item, or a pipeline run. Automation that can approve its own PR is not a QA tool.</p>
+    </div>
+  </section>
+
+  <!-- SWAP -->
+  <section id="swap">
+    <div class="sec-head">
+      <span class="eyebrow">The swap layer</span>
+      <h2>Bring your own stack</h2>
+      <p class="sub">Nothing above is tied to a vendor. The reference implementation made concrete choices; each is a slot you fill. The value lives in the parts that <em>don't</em> change when you swap them.</p>
+    </div>
+
+    <div class="tbl-scroll">
+      <table>
+        <thead><tr><th>Slot</th><th>What it does</th><th>Reference</th><th>Swap in anything that…</th></tr></thead>
+        <tbody>
+          <tr><td class="slot">Test-management system</td><td>Source of truth for a case; holds runs &amp; coverage</td><td class="mono">Testmo</td><td>has a REST API for cases, runs, results</td></tr>
+          <tr><td class="slot">Issue tracker</td><td>Holds the key everything joins on</td><td class="mono">Linear / Jira</td><td>exposes issues by a stable key</td></tr>
+          <tr><td class="slot">Automation runner</td><td>Executes the specs</td><td class="mono">Playwright + TS</td><td>emits a machine-readable result (e.g. JUnit XML)</td></tr>
+          <tr><td class="slot">AI process layer</td><td>Carries standards into the work</td><td class="mono">Claude Code</td><td>discovers skills &amp; agents from fixed paths</td></tr>
+          <tr><td class="slot">Distribution</td><td>Ships the base to every repo</td><td class="mono">Vendored copies</td><td>pins a version in base-version.json; refreshes via PR</td></tr>
+          <tr><td class="slot">CI</td><td>Runs the suite, consumes results</td><td class="mono">Azure / GH Actions</td><td>can run the runner and ingest its output</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- ADOPT -->
+  <section id="adopt">
+    <div class="sec-head">
+      <span class="eyebrow">Adoption path</span>
+      <h2>How a team takes this and runs</h2>
+      <p class="sub">Five moves from zero to running an issue through the chain.</p>
+    </div>
+
+    <div class="steps">
+      <div class="step">
+        <span class="idx">1</span>
+        <div>
+          <h3>Run the readiness gate (Lite)</h3>
+          <p>Score testability before init. GO proceeds; CONDITIONAL scopes the plan; NO-GO delivers an eng checklist.</p>
+        </div>
+      </div>
+      <div class="step">
+        <span class="idx">2</span>
+        <div>
+          <h3>Install the harness</h3>
+          <p>Lite: <span class="mono">qa/</span> in the app repo. Standard: dedicated automation repo with vendored <span class="mono">.claude/</span> copies.</p>
+        </div>
+      </div>
+      <div class="step">
+        <span class="idx">3</span>
+        <div>
+          <h3>Run the init skill once per product</h3>
+          <p><span class="mono">qa-0-init</span> interviews the adopter and fills every token — trackers, environments, credentials by reference.</p>
+        </div>
+      </div>
+      <div class="step">
+        <span class="idx">4</span>
+        <div>
+          <h3>Fill in product context</h3>
+          <p>The highest-value, lowest-glamour file: real surface area, auth model, the parts that look broken and aren't.</p>
+        </div>
+      </div>
+      <div class="step">
+        <span class="idx">5</span>
+        <div>
+          <h3>Run an issue through the chain</h3>
+          <p><span class="mono" style="color:var(--gate)">qa-start → analyse → cases → manual → automate → report</span>. Enable <span class="mono">@core</span> on PR; deliver Release Gate Lite.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <p class="big">Standards cascade down. Evidence flows up. A policy written once <span class="amp">lands everywhere</span>.</p>
+    <p class="lead" style="margin-top:1rem">And the question the whole system exists to answer — <em>was this tested?</em> — comes back as a record, not an anecdote.</p>
+    <p class="meta">QA OPERATING SYSTEM · LITE EDITION · GTM DOCS IN <span class="mono">docs/</span></p>
+  </div>
+</footer>

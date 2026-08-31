@@ -1,0 +1,4 @@
+[submodule ".claude/core"]
+	path = .claude/core
+	url = <CORE_REPO_URL>
+	branch = main

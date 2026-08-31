@@ -1,0 +1,53 @@
+{
+  "$comment": [
+    "Token-only skeleton. The lifecycle scripts (qa:install, base:*, env:dump, tms:*, qa:watch) are",
+    "STACK-INDEPENDENT — they drive the framework, not a specific runner.",
+    "",
+    "The `test:*` scripts and devDependencies below are the REFERENCE BINDING (an E2E/API runner +",
+    "a test-management CLI). Swap them for your chosen runner and TMS; the swap layer in",
+    "support/qa-automation/ and config/environments.ts is where the product-specific wiring lives.",
+    "",
+    "Replace <RUNNER_TEST_CMD> etc. during `init`, or keep the reference runner to clone-and-run."
+  ],
+  "name": "<REPO_NAME>",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Automation for <PRODUCT_NAME>, structured to the four-tier QA operating system.",
+  "scripts": {
+    "qa:install": "node scripts/install.mjs",
+    "postinstall": "node scripts/install.mjs --postinstall",
+
+    "test": "<RUNNER_TEST_CMD>",
+    "test:core": "<RUNNER_TEST_CMD> --grep @core --grep-invert @flaky",
+    "test:smoke": "<RUNNER_TEST_CMD> --grep @smoke --grep-invert @flaky",
+    "test:regression": "<RUNNER_TEST_CMD> --grep @regression --grep-invert @flaky",
+    "test:e2e": "<RUNNER_TEST_CMD> --project=e2e-<DEFAULT_PROFILE>",
+    "test:api": "<RUNNER_TEST_CMD> --project=api-<DEFAULT_PROFILE>",
+    "test:flake": "<RUNNER_TEST_CMD> --repeat-each 10",
+
+    "typecheck": "tsc --noEmit -p tsconfig.json",
+    "env:dump": "tsx scripts/dump-env-config.ts",
+    "qa:watch": "tsx scripts/qa-watch.ts",
+    "qa:status": "tsx scripts/qa-watch.ts",
+
+    "tms:resolve": "tsx scripts/tms-resolve.ts",
+    "tms:map-areas": "tsx scripts/tms-map-areas.ts",
+    "tms:cases": "tsx scripts/tms-cases.ts",
+    "tms:submit": "tsx scripts/tms-submit.ts",
+    "tms:untagged": "tsx scripts/tms-untagged.ts",
+
+    "base:update": "git submodule update --remote --merge .claude/core && node .claude/core/bin/sync.mjs",
+    "base:sync": "node .claude/core/bin/sync.mjs",
+    "base:check": "node .claude/core/bin/sync.mjs --check"
+  },
+  "devDependencies": {
+    "$comment": "Reference binding. Replace <RUNNER_PACKAGE> and <TMS_CLI_PACKAGE> with your stack's.",
+    "<RUNNER_PACKAGE>": "*",
+    "<TMS_CLI_PACKAGE>": "*",
+    "@types/node": "^22.10.0",
+    "cross-env": "^7.0.3",
+    "dotenv": "^16.4.5",
+    "tsx": "^4.22.4",
+    "typescript": "^5.7.0"
+  }
+}
