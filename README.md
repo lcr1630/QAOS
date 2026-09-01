@@ -11,22 +11,22 @@ The runnable product lives in two sibling repositories; this repo explains the a
 
 ---
 
-## Product layout (three repos)
+## Product layout (three packages)
 
-| Repository | Edition | What it is |
+| Package / repo | Edition | What it is |
 |---|---|---|
-| **qa-framework-base** | Director | Standards, skills, agents, readiness rubric, startup preset — vendored into client repos |
-| **qa-automation-template** | Standard + Lite | Full Playwright harness; `lite/` scaffold for integrated `qa/` install |
-| **qa-operating-system** | GTM (this repo) | Framework narrative, service playbook, sales collateral |
-
-**Lite** installs into the client's app repo:
+| **`@lcr1630/qa-framework-base`** | Director | Standards, skills, agents, readiness rubric — vendored via `qa-base-vendor` |
+| **`@lcr1630/qa-automation-template`** | Standard + Lite | Playwright harness; `qaos-install` for Lite into client `qa/` |
+| **[QAOS](https://github.com/lcr1630/QAOS)** (this repo) | GTM | Framework narrative, service playbook, sales collateral |
 
 ```bash
-node scripts/install.mjs --into ../client-app --prefix qa --edition lite
+npm install @lcr1630/qa-automation-template   # GitHub Packages + .npmrc
+npx qaos-install --into ../client-app --prefix qa --edition lite
+npm run base:refresh                          # re-vendor @lcr1630/qa-framework-base
 ```
 
-**Standard** bootstraps a dedicated automation repository with Testmo. Both editions use **vendored**
-base copies — no git submodules.
+See [docs/packages.md](docs/packages.md) for publish setup. **Lite** still commits vendored
+`.claude/` copies in the client repo — packages are the source of truth, not runtime deps in CI.
 
 ---
 
@@ -51,7 +51,7 @@ For seed–Series A AI startups: release confidence without hiring a QA team.
 | [docs/testability-readiness.md](docs/testability-readiness.md) | Operators + technical buyers — rubric |
 | [docs/evolution-lite-to-standard.md](docs/evolution-lite-to-standard.md) | When and how to upgrade |
 | [docs/sales/one-pager.md](docs/sales/one-pager.md) | Client-facing summary |
-| [docs/sales/pitch-script.md](docs/sales/pitch-script.md) | Discovery call structure |
+| [docs/packages.md](docs/packages.md) | Publish order, `.npmrc`, local vs GitHub Packages |
 
 ---
 

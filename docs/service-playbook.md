@@ -202,8 +202,8 @@ A design-partner engagement is **done** when:
 # Install Lite into client app
 node scripts/install.mjs --into ../client-app --prefix qa --edition lite
 
-# Refresh vendored base before a client update PR
-npm run base:refresh -- --base-path ../qa-framework-base
+# Refresh vendored base (@lcr1630/qa-framework-base via npm run base:refresh)
+npm run base:refresh
 
 # Client-side (from qa/)
 npm run test:core
