@@ -3,30 +3,27 @@
 **QAOS** *(pronounced "chaos")* — a vendor-neutral framework for making quality standards
 actually reach the work, instead of sitting in a document nobody opens.
 
-This repository is the **narrative and go-to-market layer** for the production QA operating system.
-The runnable product lives in two sibling repositories; this repo explains the architecture, sells
-**QA OS Lite** to small AI startups, and documents how to deliver it as a service.
+This repository is the **public narrative layer** for the QA operating system — framework
+philosophy, buyer docs, and a visual overview. The runnable product and operator playbooks are
+**private**; clients receive access when they engage.
 
 > **Visual overview:** open [overview.html](overview.html) in a browser.
 
 ---
 
-## Product layout (three packages)
+## Product layout
 
-| Package / repo | Edition | What it is |
+| Package / repo | Visibility | What it is |
 |---|---|---|
-| **`@lcr1630/qa-framework-base`** | Director | Standards, skills, agents, readiness rubric — vendored via `qa-base-vendor` |
-| **`@lcr1630/qa-automation-template`** | Standard + Lite | Playwright harness; `qaos-install` for Lite into client `qa/` |
-| **[QAOS](https://github.com/lcr1630/QAOS)** (this repo) | GTM | Framework narrative, service playbook, sales collateral |
+| **`@lcr1630/qa-framework-base`** | Private | Director tier — standards, skills, agents, readiness rubric |
+| **`@lcr1630/qa-automation-template`** | Private | Playwright harness; Lite install into client `qa/` |
+| **[QAOS](https://github.com/lcr1630/QAOS)** (this repo) | Public | Framework narrative and buyer-facing docs |
+| **qaos-internal** | Private | Service playbook, pitch script, onboarding, publish docs |
 
-```bash
-npm install @lcr1630/qa-automation-template   # GitHub Packages + .npmrc
-npx qaos-install --into ../client-app --prefix qa --edition lite
-npm run base:refresh                          # re-vendor @lcr1630/qa-framework-base
-```
+Packages ship on **GitHub Packages** under `@lcr1630` — access granted to clients and collaborators.
+Lite editions commit **vendored** `.claude/` copies in the client repo; CI does not depend on npm at runtime.
 
-See [docs/packages.md](docs/packages.md) for publish setup. **Lite** still commits vendored
-`.claude/` copies in the client repo — packages are the source of truth, not runtime deps in CI.
+See [docs/README.md](docs/README.md) for public documentation index.
 
 ---
 
@@ -42,16 +39,14 @@ For seed–Series A AI startups: release confidence without hiring a QA team.
 | **AI evals** | Golden sets and rubrics under `qa/evals/` |
 | **Release Gate Lite** | HTML report for stakeholders — readiness + test results |
 
-### GTM docs
+### Public docs
 
 | Doc | Audience |
 |---|---|
-| [docs/service-playbook.md](docs/service-playbook.md) | You — how to deliver the engagement |
-| [docs/onboarding-week1-3.md](docs/onboarding-week1-3.md) | Client schedule — week by week |
-| [docs/testability-readiness.md](docs/testability-readiness.md) | Operators + technical buyers — rubric |
-| [docs/evolution-lite-to-standard.md](docs/evolution-lite-to-standard.md) | When and how to upgrade |
-| [docs/sales/one-pager.md](docs/sales/one-pager.md) | Client-facing summary |
-| [docs/packages.md](docs/packages.md) | Publish order, `.npmrc`, local vs GitHub Packages |
+| [docs/sales/one-pager.md](docs/sales/one-pager.md) | Prospects — what QA OS Lite delivers |
+| [docs/testability-readiness.md](docs/testability-readiness.md) | Technical buyers — readiness rubric |
+| [docs/evolution-lite-to-standard.md](docs/evolution-lite-to-standard.md) | Teams outgrowing Lite — upgrade path |
+| [docs/README.md](docs/README.md) | Index of public documentation |
 
 ---
 
@@ -366,15 +361,15 @@ boundary.
 **Lite (startups):**
 
 1. Run **`readiness-gate`** — score testability; get GO / CONDITIONAL / NO-GO.
-2. **Install** — `node scripts/install.mjs --into ../app --prefix qa --edition lite`.
+2. **Install** — vendored `qa/` folder via your QA provider (private `@lcr1630` packages).
 3. Run **`qa-0-init`** once — fills tokens, verifies harness.
 4. **Fill in product context** — the file only the team can write.
 5. **Run an issue through the chain** — `qa-start` → phases 1–5; enable `@core` on PR.
 
 **Standard (scale):**
 
-1. Clone **qa-automation-template**; `npm run qa:install`.
-2. Run **`qa-0-init`** with Testmo tokens.
+1. Full **qa-automation-template** harness with Testmo integration.
+2. Run **`qa-0-init`** with TMS tokens.
 3. Same phases 4–5; full release gate with Testmo submit.
 
-See [docs/service-playbook.md](docs/service-playbook.md) for service delivery detail.
+Contact for access to private packages and installation.

@@ -154,6 +154,6 @@ Append new reports; do not delete prior ones — the trajectory matters for rele
 
 ## Related docs
 
-- [service-playbook.md](service-playbook.md) — when to run the gate in delivery
-- [onboarding-week1-3.md](onboarding-week1-3.md) — Day 2 schedule
 - [evolution-lite-to-standard.md](evolution-lite-to-standard.md) — when readiness gaps close at scale
+- [sales/one-pager.md](sales/one-pager.md) — what Lite delivers
+- [README.md](../README.md) — readiness gate in the Lite offer

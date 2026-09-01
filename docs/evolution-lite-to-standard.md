@@ -118,5 +118,6 @@ Re-run readiness gate — do not assume prior GO still holds if staging/auth reg
 
 ## Related docs
 
-- [service-playbook.md](service-playbook.md)
 - [sales/one-pager.md](sales/one-pager.md) — edition comparison for buyers
+- [testability-readiness.md](testability-readiness.md) — readiness gate before init
+- [README.md](../README.md) — full framework narrative
